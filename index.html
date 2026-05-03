@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Should I Go Out in Izmir Tonight?</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e1e2f, #3b2f63);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #ddd;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #ff4f8b;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff2f76;
+    }
+
+    .reset {
+      background: #777;
+      margin-top: 10px;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.18);
+      display: none;
+    }
+
+    .result h2 {
+      margin-top: 0;
+      color: #ffd166;
+    }
+
+    .logic {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <h1>Should I Go Out in Izmir Tonight?</h1>
+    <p class="subtitle">
+      A local recommendation app for university students in Izmir.
+    </p>
+
+    <label for="budget">1. Budget</label>
+    <select id="budget">
+      <option value="">Choose one</option>
+      <option value="B1">Broke</option>
+      <option value="B2">Normal</option>
+      <option value="B3">Comfortable</option>
+    </select>
+
+    <label for="energy">2. Energy Level</label>
+    <select id="energy">
+      <option value="">Choose one</option>
+      <option value="E1">Low</option>
+      <option value="E2">Medium</option>
+      <option value="E3">High</option>
+    </select>
+
+    <label for="responsibility">3. Tomorrow Responsibility</label>
+    <select id="responsibility">
+      <option value="">Choose one</option>
+      <option value="R1">None</option>
+      <option value="R2">Class</option>
+      <option value="R3">Exam / Deadline</option>
+    </select>
+
+    <label for="vibe">4. Preferred Vibe</label>
+    <select id="vibe">
+      <option value="">Choose one</option>
+      <option value="V1">Chill Cafe</option>
+      <option value="V2">Social Bar</option>
+      <option value="V3">Seaside Walk</option>
+      <option value="V4">Nightlife / Party</option>
+    </select>
+
+    <label for="distance">5. Distance Willingness</label>
+    <select id="distance">
+      <option value="">Choose one</option>
+      <option value="D1">Near / Bornova</option>
+      <option value="D2">Medium / Alsancak</option>
+      <option value="D3">Far / Karsiyaka-Bostanli</option>
+    </select>
+
+    <button onclick="getRecommendation()">Get Recommendation</button>
+    <button class="reset" onclick="resetApp()">Reset</button>
+
+    <div id="result" class="result">
+      <h2 id="outputTitle"></h2>
+      <p id="outputText"></p>
+      <p id="logicText" class="logic"></p>
+    </div>
+  </div>
+
+  <script>
+    function getRecommendation() {
+      const B = document.getElementById("budget").value;
+      const E = document.getElementById("energy").value;
+      const R = document.getElementById("responsibility").value;
+      const V = document.getElementById("vibe").value;
+      const D = document.getElementById("distance").value;
+
+      if (!B || !E || !R || !V || !D) {
+        alert("Please answer all 5 questions before getting your recommendation.");
+        return;
+      }
+
+      let title = "";
+      let text = "";
+      let logic = "";
+
+      if (B === "B1" && E === "E1" && R === "R3" && V === "V4" && D === "D2") {
+        title = "Stay in - not worth going out tonight";
+        text = "Your budget, energy, and deadline situation make going out too risky tonight.";
+        logic = "Matched L1: B1 ∧ E1 ∧ R3 ∧ V4 ∧ D2 → O1";
+      } 
+      else if (B === "B1" && E === "E2" && R === "R2" && V === "V1" && D === "D1") {
+        title = "Go to a chill cafe in Bornova";
+        text = "A nearby, low-cost cafe plan fits your energy and class schedule best.";
+        logic = "Matched L2: B1 ∧ E2 ∧ R2 ∧ V1 ∧ D1 → O2";
+      } 
+      else if (B === "B1" && E === "E2" && R === "R1" && V === "V3" && D === "D1") {
+        title = "Short seaside walk or low-cost plan";
+        text = "You do not need to spend much. A simple walk or low-cost plan is enough.";
+        logic = "Matched L3: B1 ∧ E2 ∧ R1 ∧ V3 ∧ D1 → O3";
+      } 
+      else if (B === "B2" && E === "E2" && R === "R2" && V === "V2" && D === "D2") {
+        title = "Go to Alsancak for social bars";
+        text = "Your budget and energy are balanced, so a moderate social plan works.";
+        logic = "Matched L4: B2 ∧ E2 ∧ R2 ∧ V2 ∧ D2 → O4";
+      } 
+      else if (B === "B2" && E === "E3" && R === "R1" && V === "V3" && D === "D3") {
+        title = "Go to Bostanli or Karsiyaka for a seaside night";
+        text = "You have enough energy and no responsibility tomorrow, so a farther seaside plan makes sense.";
+        logic = "Matched L5: B2 ∧ E3 ∧ R1 ∧ V3 ∧ D3 → O5";
+      } 
+      else if (B === "B3" && E === "E3" && R === "R1" && V === "V4" && D === "D2") {
+        title = "Full nightlife plan - tonight is worth it";
+        text = "Your energy, budget, and schedule all support a stronger night out.";
+        logic = "Matched L6: B3 ∧ E3 ∧ R1 ∧ V4 ∧ D2 → O6";
+      } 
+      else if (B === "B2" && E === "E2" && R === "R3" && V === "V2" && D === "D2") {
+        title = "Go out but set a strict time and budget limit";
+        text = "You can go out, but because of your deadline or exam, keep it short and controlled.";
+        logic = "Matched L7: B2 ∧ E2 ∧ R3 ∧ V2 ∧ D2 → O7";
+      } 
+      else if (B === "B1" && E === "E1" && R === "R2" && V === "V1" && D === "D1") {
+        title = "Stay in and do a relaxing reset night";
+        text = "You want something chill, but your low energy and budget make staying in the smarter choice.";
+        logic = "Matched L8: B1 ∧ E1 ∧ R2 ∧ V1 ∧ D1 → O8";
+      } 
+      else {
+        title = "Low-risk plan - short outing or stay in";
+        text = "Your answers do not match one exact branch, so the safest choice is a short, low-pressure plan.";
+        logic = "Fallback: Other combinations → O9";
+      }
+
+      document.getElementById("outputTitle").textContent = title;
+      document.getElementById("outputText").textContent = text;
+      document.getElementById("logicText").textContent = logic;
+      document.getElementById("result").style.display = "block";
+    }
+
+    function resetApp() {
+      document.getElementById("budget").value = "";
+      document.getElementById("energy").value = "";
+      document.getElementById("responsibility").value = "";
+      document.getElementById("vibe").value = "";
+      document.getElementById("distance").value = "";
+      document.getElementById("result").style.display = "none";
+    }
+  </script>
+</body>
+</html>
