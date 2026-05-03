@@ -22,7 +22,7 @@
       background: rgba(255, 255, 255, 0.1);
       padding: 30px;
       border-radius: 20px;
-      max-width: 650px;
+      max-width: 700px;
       width: 100%;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
@@ -92,6 +92,7 @@
       margin-top: 10px;
       font-size: 14px;
       color: #ddd;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -167,59 +168,191 @@
         return;
       }
 
-      let title = "";
-      let text = "";
-      let logic = "";
+      let scores = {
+        O1: 0,
+        O2: 0,
+        O3: 0,
+        O4: 0,
+        O5: 0,
+        O6: 0,
+        O7: 0,
+        O8: 0
+      };
 
-      if (B === "B1" && E === "E1" && R === "R3" && V === "V4" && D === "D2") {
-        title = "Stay in - not worth going out tonight";
-        text = "Your budget, energy, and deadline situation make going out too risky tonight.";
-        logic = "Matched L1: B1 ∧ E1 ∧ R3 ∧ V4 ∧ D2 → O1";
-      } 
-      else if (B === "B1" && E === "E2" && R === "R2" && V === "V1" && D === "D1") {
-        title = "Go to a chill cafe in Bornova";
-        text = "A nearby, low-cost cafe plan fits your energy and class schedule best.";
-        logic = "Matched L2: B1 ∧ E2 ∧ R2 ∧ V1 ∧ D1 → O2";
-      } 
-      else if (B === "B1" && E === "E2" && R === "R1" && V === "V3" && D === "D1") {
-        title = "Short seaside walk or low-cost plan";
-        text = "You do not need to spend much. A simple walk or low-cost plan is enough.";
-        logic = "Matched L3: B1 ∧ E2 ∧ R1 ∧ V3 ∧ D1 → O3";
-      } 
-      else if (B === "B2" && E === "E2" && R === "R2" && V === "V2" && D === "D2") {
-        title = "Go to Alsancak for social bars";
-        text = "Your budget and energy are balanced, so a moderate social plan works.";
-        logic = "Matched L4: B2 ∧ E2 ∧ R2 ∧ V2 ∧ D2 → O4";
-      } 
-      else if (B === "B2" && E === "E3" && R === "R1" && V === "V3" && D === "D3") {
-        title = "Go to Bostanli or Karsiyaka for a seaside night";
-        text = "You have enough energy and no responsibility tomorrow, so a farther seaside plan makes sense.";
-        logic = "Matched L5: B2 ∧ E3 ∧ R1 ∧ V3 ∧ D3 → O5";
-      } 
-      else if (B === "B3" && E === "E3" && R === "R1" && V === "V4" && D === "D2") {
-        title = "Full nightlife plan - tonight is worth it";
-        text = "Your energy, budget, and schedule all support a stronger night out.";
-        logic = "Matched L6: B3 ∧ E3 ∧ R1 ∧ V4 ∧ D2 → O6";
-      } 
-      else if (B === "B2" && E === "E2" && R === "R3" && V === "V2" && D === "D2") {
-        title = "Go out but set a strict time and budget limit";
-        text = "You can go out, but because of your deadline or exam, keep it short and controlled.";
-        logic = "Matched L7: B2 ∧ E2 ∧ R3 ∧ V2 ∧ D2 → O7";
-      } 
-      else if (B === "B1" && E === "E1" && R === "R2" && V === "V1" && D === "D1") {
-        title = "Stay in and do a relaxing reset night";
-        text = "You want something chill, but your low energy and budget make staying in the smarter choice.";
-        logic = "Matched L8: B1 ∧ E1 ∧ R2 ∧ V1 ∧ D1 → O8";
-      } 
-      else {
-        title = "Low-risk plan - short outing or stay in";
-        text = "Your answers do not match one exact branch, so the safest choice is a short, low-pressure plan.";
-        logic = "Fallback: Other combinations → O9";
+      let rules = [];
+
+      // Budget rules
+      if (B === "B1") {
+        scores.O1 += 2;
+        scores.O2 += 2;
+        scores.O3 += 2;
+        rules.push("B1: low budget increases stay-in, Bornova cafe, and low-cost walk scores.");
       }
 
-      document.getElementById("outputTitle").textContent = title;
-      document.getElementById("outputText").textContent = text;
-      document.getElementById("logicText").textContent = logic;
+      if (B === "B2") {
+        scores.O4 += 2;
+        scores.O5 += 1;
+        scores.O7 += 1;
+        rules.push("B2: normal budget supports social or controlled plans.");
+      }
+
+      if (B === "B3") {
+        scores.O6 += 3;
+        scores.O4 += 1;
+        rules.push("B3: comfortable budget supports nightlife and social plans.");
+      }
+
+      // Energy rules
+      if (E === "E1") {
+        scores.O1 += 3;
+        scores.O8 += 3;
+        rules.push("E1: low energy increases stay-in and reset-night scores.");
+      }
+
+      if (E === "E2") {
+        scores.O2 += 1;
+        scores.O3 += 1;
+        scores.O4 += 2;
+        scores.O7 += 1;
+        rules.push("E2: medium energy supports moderate plans.");
+      }
+
+      if (E === "E3") {
+        scores.O5 += 2;
+        scores.O6 += 3;
+        scores.O4 += 1;
+        rules.push("E3: high energy supports seaside night or nightlife.");
+      }
+
+      // Responsibility rules
+      if (R === "R1") {
+        scores.O5 += 2;
+        scores.O6 += 2;
+        scores.O4 += 1;
+        rules.push("R1: no responsibility tomorrow allows bigger plans.");
+      }
+
+      if (R === "R2") {
+        scores.O2 += 2;
+        scores.O7 += 2;
+        scores.O8 += 2;
+        rules.push("R2: class tomorrow supports chill, limited, or reset plans.");
+      }
+
+      if (R === "R3") {
+        scores.O1 += 4;
+        scores.O7 += 3;
+        scores.O8 += 2;
+        rules.push("R3: exam/deadline strongly limits going out.");
+      }
+
+      // Vibe rules
+      if (V === "V1") {
+        scores.O2 += 4;
+        scores.O8 += 1;
+        rules.push("V1: chill cafe mood strongly supports Bornova cafe.");
+      }
+
+      if (V === "V2") {
+        scores.O4 += 4;
+        scores.O7 += 2;
+        rules.push("V2: social bar mood supports Alsancak or limited social plan.");
+      }
+
+      if (V === "V3") {
+        scores.O3 += 3;
+        scores.O5 += 4;
+        rules.push("V3: seaside mood supports walk or Bostanli/Karsiyaka plan.");
+      }
+
+      if (V === "V4") {
+        scores.O6 += 4;
+        scores.O7 += 1;
+        scores.O1 += 1;
+        rules.push("V4: nightlife mood supports full nightlife only if other conditions are strong.");
+      }
+
+      // Distance rules
+      if (D === "D1") {
+        scores.O2 += 3;
+        scores.O3 += 2;
+        scores.O8 += 1;
+        rules.push("D1: near distance supports Bornova, low-cost, or reset plans.");
+      }
+
+      if (D === "D2") {
+        scores.O4 += 3;
+        scores.O6 += 1;
+        scores.O7 += 1;
+        rules.push("D2: medium distance supports Alsancak and controlled plans.");
+      }
+
+      if (D === "D3") {
+        scores.O5 += 4;
+        scores.O6 += 1;
+        rules.push("D3: far distance supports Karsiyaka/Bostanli seaside plan.");
+      }
+
+      // Strong override rules
+      if (B === "B1" && E === "E1" && R === "R3") {
+        scores.O1 += 6;
+        rules.push("Override L1: B1 ∧ E1 ∧ R3 → O1.");
+      }
+
+      if (V === "V4" && E === "E3" && B === "B3" && R === "R1") {
+        scores.O6 += 6;
+        rules.push("Override L6: V4 ∧ E3 ∧ B3 ∧ R1 → O6.");
+      }
+
+      if (R === "R3" && (V === "V2" || V === "V4")) {
+        scores.O7 += 5;
+        rules.push("Override L7: R3 with social/nightlife vibe → O7.");
+      }
+
+      let bestOutput = Object.keys(scores).reduce((a, b) => scores[a] >= scores[b] ? a : b);
+
+      const recommendations = {
+        O1: {
+          title: "Stay in - not worth going out tonight",
+          text: "Your current situation makes going out too risky. Saving your energy, money, and focus is the smarter decision tonight."
+        },
+        O2: {
+          title: "Go to a chill cafe in Bornova",
+          text: "A nearby, low-pressure cafe plan fits your budget, energy, and distance better than a big night out."
+        },
+        O3: {
+          title: "Short seaside walk or low-cost plan",
+          text: "You want to go out, but the safest option is something simple, cheap, and not too tiring."
+        },
+        O4: {
+          title: "Go to Alsancak for social bars",
+          text: "Your answers support a social night out, but not necessarily a full party plan. Alsancak is the balanced choice."
+        },
+        O5: {
+          title: "Go to Bostanli or Karsiyaka for a seaside night",
+          text: "Your mood and distance preference fit a longer seaside plan. This is a good option if you want a more atmospheric night."
+        },
+        O6: {
+          title: "Full nightlife plan - tonight is worth it",
+          text: "Your energy, budget, and schedule support a bigger night out. This is the strongest green-light result."
+        },
+        O7: {
+          title: "Go out but set a strict time and budget limit",
+          text: "You can go out, but your responsibility level means the plan should be controlled, short, and not too expensive."
+        },
+        O8: {
+          title: "Stay in and do a relaxing reset night",
+          text: "You do not need a full plan tonight. Resting, resetting, and keeping the night calm fits your situation best."
+        }
+      };
+
+      document.getElementById("outputTitle").textContent = recommendations[bestOutput].title;
+      document.getElementById("outputText").textContent = recommendations[bestOutput].text;
+      document.getElementById("logicText").innerHTML =
+        "Selected output: " + bestOutput + "<br>" +
+        "Score summary: " + JSON.stringify(scores) + "<br><br>" +
+        "Rules triggered:<br>" + rules.join("<br>");
+
       document.getElementById("result").style.display = "block";
     }
 
